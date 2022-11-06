@@ -1,7 +1,7 @@
 import './App.css';
 import React, { useEffect, useState } from 'react';
 import { ethers } from "ethers";
-import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
+// import EthersAdapter from '@gnosis.pm/safe-ethers-lib'
 
 
 
@@ -16,6 +16,9 @@ function App() {
   const [loading, setLoading] = useState(false)
   const [lockAddress, setLockAddress] = useState("")
   const [textCopied, setTextCopied] = useState(false)
+
+// connects on page load
+  useEffect(() => connect, [])
 
   const TimeGuardABI = [
     {
@@ -179,6 +182,35 @@ function App() {
     setTextCopied(true)
   }
   
+  const something = async () => {
+    const safeAddress = "0x2A31b4aE7d4D1dcE2f5d1E08c67Bae1747835EC3"
+    const lockAddress = "0xC30bdAD24C1cC4fAF6F714Ca02eA2ae2c26fF376"
+    //^hardcoded for testing
+
+    //two things to try: 1.) sign the tx_data using sign_message 2.) sign the unsigned tx, which can be classified as a transaction request
+
+    const safeABI = SafeABI
+    const safeContract = new ethers.Contract(safeAddress, safeABI, signer)
+    console.log(safeContract)
+
+    const {data: tx_data} = await safeContract.populateTransaction.setGuard(lockAddress)
+
+    const tx_nonce = await safeContract.nonce()
+    const new_tx_data = await safeContract.encodeTransactionData(safeAddress, 0, tx_data, 0, 0, 0, 0, "0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000", tx_nonce)
+    const tx_hash = await safeContract.getTransactionHash(safeAddress, 0, new_tx_data, 0, 0, 0, 0, "0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000", tx_nonce)
+    console.log(tx_hash)
+    
+    const arrayified_tx_hash = ethers.utils.arrayify(tx_hash)
+
+    const signatures = await signer.signMessage(arrayified_tx_hash)
+    console.log(signatures)
+    console.log(ethers.utils.splitSignature(signatures))
+
+    const test = await safeContract.execTransaction(safeAddress, 0, tx_data, 0, 0, 0, 0, "0x0000000000000000000000000000000000000000", "0x0000000000000000000000000000000000000000", signatures)
+    console.log(await test.wait())
+
+    
+  }
 
 
   return (
@@ -215,6 +247,8 @@ function App() {
      <h1>{loading ? "Generating lock..." : null}</h1>
      <br />
       5. Install the lock via Gnosis Safe's Web App (<a href="https://help.gnosis-safe.io/en/articles/5496893-add-a-transaction-guard" target="_blank">tutorial here</a>)
+
+      {/* <br /><br /><br /><br /><button onClick={something}>test button</button> */}
     </div>
   );
 }
