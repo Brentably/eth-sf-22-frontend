@@ -20,6 +20,17 @@ function App() {
 // connects on page load
   useEffect(() => connect, [])
 
+  useEffect(() => {
+    const func = async () => {
+    if(safeAddress) {
+    let resp = await fetch(`https://api.covalenthq.com/v1/5/address/${safeAddress}/balances_v2/?quote-currency=USD&format=JSON&nft=false&no-nft-fetch=false&key=ckey_2b4e40855724423b83d84b656a6`)
+    console.log(await resp.json())
+    }
+  }
+    func()
+  }, [safeAddress])
+
+
   const TimeGuardABI = [
     {
       "inputs": [
@@ -174,7 +185,7 @@ function App() {
     console.log(timeGuardContract.address)
     setLockAddress(timeGuardContract.address)
 
-    
+    console.log(signer)
   }
 
   const handleCopy = () => {
@@ -215,7 +226,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>HODL Machine 💎👐</h1>
+      <h1>HODL Machine <span role="img">💎</span><span role="img">👐</span></h1>
       <p>1. </p><button onClick={connect}>{signer ? "connected!" : "Connect Wallet"}</button>
       <br/><br/>
       2.
