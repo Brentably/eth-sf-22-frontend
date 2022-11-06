@@ -12,8 +12,10 @@ function App() {
   const [provider, setProvider] = useState(null)
   const [address, setAddress] = useState(null)
   const [timeValue, setTimeValue] = useState(300)
-  const [safeAddress, setSafeAddress] = useState("0xE8F26bFFB499E2F7757762E26dD168980D3470c3")
+  const [safeAddress, setSafeAddress] = useState("0x2A31b4aE7d4D1dcE2f5d1E08c67Bae1747835EC3")
   const [loading, setLoading] = useState(false)
+  const [lockAddress, setLockAddress] = useState("")
+  const [textCopied, setTextCopied] = useState(false)
 
   const TimeGuardABI = [
     {
@@ -157,7 +159,7 @@ function App() {
     console.log(signer)
   }
 
-  const lockSafe = async () => {
+  const genLock = async () => {
 
     const factory = new ethers.ContractFactory(TimeGuardABI, TimeGuardByteCode, signer)
     const timeGuardContract = await factory.deploy(timeValue);
@@ -167,31 +169,21 @@ function App() {
     setLoading(false)
 
     console.log(timeGuardContract.address)
-    const userSafe = new ethers.Contract(safeAddress, SafeABI, provider);
-    const uhhUserSafe = userSafe.connect(signer)
-    console.dir(userSafe)
+    setLockAddress(timeGuardContract.address)
 
-    const unsigned_tx = await uhhUserSafe.populateTransaction.setGuard(timeGuardContract.address, {gasLimit: 100000})
-    const tx_data = unsigned_tx.data
-    console.log(tx_data)
-
-    setLoading(true)
-    await uhhUserSafe.
-    setLoading(false)
-    // console.log("done") //I user can't add tx-guard. they have to call exec tx function to call setGuard function on safe
-
-
-
-    //get timeGuard Address
-
-    //connect to safe, call setGuard function
+    
   }
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(lockAddress)
+    setTextCopied(true)
+  }
   
 
 
   return (
     <div className="App">
+      <h1>HODL Machine 💎👐</h1>
       <p>1. </p><button onClick={connect}>{signer ? "connected!" : "Connect Wallet"}</button>
       <br/><br/>
       2.
@@ -213,13 +205,16 @@ function App() {
       4.
       <br /><br />
       <form>
-      <label>Safe Address:
+      <label>Safe Address: <br /> <br />
         <input type="text" value={safeAddress} onChange={(e) => setSafeAddress(e.target.value)}/>
       </label>
     </form>
     <br/>
-     <button onClick={lockSafe}>Lock The Safe</button>
-     <h1>{loading ? "LOADING..." : null}</h1>
+     <button onClick={genLock}>Generate Lock</button>
+     <p onClick={handleCopy}>{lockAddress ? `${lockAddress}` : null}{textCopied? " copied!" : null}</p>
+     <h1>{loading ? "Generating lock..." : null}</h1>
+     <br />
+      5. Install the lock via Gnosis Safe's Web App (<a href="https://help.gnosis-safe.io/en/articles/5496893-add-a-transaction-guard" target="_blank">tutorial here</a>)
     </div>
   );
 }
