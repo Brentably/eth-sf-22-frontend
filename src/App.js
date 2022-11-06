@@ -12,7 +12,7 @@ function App() {
   const [provider, setProvider] = useState(null)
   const [address, setAddress] = useState(null)
   const [timeValue, setTimeValue] = useState(300)
-  const [safeAddress, setSafeAddress] = useState("0x2A31b4aE7d4D1dcE2f5d1E08c67Bae1747835EC3")
+  const [safeAddress, setSafeAddress] = useState("")
   const [loading, setLoading] = useState(false)
   const [lockAddress, setLockAddress] = useState("")
   const [textCopied, setTextCopied] = useState(false)
