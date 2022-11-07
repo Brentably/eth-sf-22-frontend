@@ -230,13 +230,15 @@ function App() {
   return (
     <div className="App">
       <h1>HODL Machine <span role="img">💎</span><span role="img">👐</span></h1>
-      <p>1. </p><button onClick={connect}>{signer ? "connected!" : "Connect Wallet"}</button>
+      1.
+      <br/>
+      <p>Deploy Safe at <a href="https://gnosis-safe.io/app/welcome" target="_blank">https://gnosis-safe.io/app/welcome</a> or use existing Safe.</p>
+      
+      
+      2.<p> Send assets you want HODL to Safe</p>
+      <p>3. </p><button onClick={connect}>{signer ? "connected!" : "Connect Wallet"}</button>
       <br/><br/>
-      2.
-      <br/>
-      <p>Deploy Safe at <a href="https://gnosis-safe.io/app/welcome" target="_blank">https://gnosis-safe.io/app/welcome</a> and send assets to Safe</p>
-      <br/>
-      3.
+      4.
       <br /><br />
       How long do you want to HODL? <br /> <br />
       <select value={timeValue} onChange={(e) => setTimeValue(e.target.value)}>
@@ -247,22 +249,23 @@ function App() {
             <option value={157680000}>5 years</option>
           </select>
       
-      <br /><br />
-      4.
+    
+      {/* 4.
       <br /><br />
       <form>
       <label>Safe Address: <br /> <br />
         <input type="text" value={safeAddress} onChange={(e) => setSafeAddress(e.target.value)}/>
       </label>
-    </form>
-    <br/>
-     <button onClick={genLock}>Generate Lock</button>
+    </form> */}
+    
+     <button onClick={genLock}>Generate and Deploy Lock</button>
      <p onClick={handleCopy}>{lockAddress ? `${lockAddress}` : null}{textCopied? " copied!" : null}</p>
      <h1>{loading ? "Generating lock..." : null}</h1>
      <br />
       5. Install the lock via Gnosis Safe's Web App (<a href="https://help.gnosis-safe.io/en/articles/5496893-add-a-transaction-guard" target="_blank">tutorial here</a>)
+      <br/><br/>
+6. <br /> <br/>You are now forced to HODL for the time period selected :)
 
-      {/* <br /><br /><br /><br /><button onClick={something}>test button</button> */}
     </div>
   );
 }
